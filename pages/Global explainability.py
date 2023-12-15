@@ -1,0 +1,166 @@
+import pickle
+import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from xgboost import XGBRegressor
+from sklearn.preprocessing import LabelEncoder
+import shap
+from streamlit_shap import st_shap
+import plotly.graph_objects as go
+from sklearn.metrics import confusion_matrix, classification_report, ConfusionMatrixDisplay
+
+class CustomLabelEncoder(LabelEncoder):
+    def _init_(self, mapping):
+        super()._init_()
+        self.classes_ = list(mapping.keys())
+        self.mapping = mapping
+
+    def transform(self, x):
+        return [self.mapping.get(item, -1) for item in x]
+    
+
+
+def create_label_encoder(mapping):
+    return CustomLabelEncoder(mapping)
+
+
+
+
+st.set_page_config(
+page_title="Career Outcome Prediction",
+layout="wide",
+initial_sidebar_state="expanded")
+
+# Read
+with open('pages/model.pkl', 'rb') as file:
+    data = pickle.load(file)
+    
+with open("dataframe_all.pkl","rb") as file:
+    dataframe_all = pickle.load(file)["dataframe"]
+
+model = data["model"]
+le_career_outcome = data["le_career_outcome"]
+le_season_outcome = data["le_season_outcome"]
+X_test = data["X_test"]
+y_test = data["y_test"]
+y_pred_test = data["y_pred_test"]
+young_players = data["young_players"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################################################################################################
+
+
+
+st.write("# Global Explainability")
+shap.initjs()
+explainer = shap.Explainer(model)
+shap_values = explainer(X_test)
+
+
+
+class_names = ['Out of the League', 'Roster', 'Rotation', 'Starter', 'All-Star', 'Elite']
+average_absolute_shap_values = pd.DataFrame(index= X_test.columns, columns=class_names)
+
+for class_ in range(6):
+    shap_values_class_i = shap_values[:, :, class_]
+    
+    average_absolute_shap_values[class_names[class_]]= abs(shap_values_class_i.values).mean(axis=0)
+    
+average_absolute_shap_values['sum'] = average_absolute_shap_values.sum(axis=1)
+average_absolute_shap_values = average_absolute_shap_values.sort_values(by='sum', ascending=True)
+average_absolute_shap_values = average_absolute_shap_values.drop('sum', axis=1)
+
+
+
+
+
+colors = ['#008BFB', '#3769E8', '#8F37BB', '#CD0095', '#F70069', '#2CDB6A']
+fig = go.Figure()
+
+for i, col in enumerate(average_absolute_shap_values.columns):
+    fig.add_trace(go.Bar(y=average_absolute_shap_values.index, x=average_absolute_shap_values[col], name=col, orientation='h', marker=dict(color=colors[i]) ))
+
+fig.update_layout(
+    barmode='stack',
+    title='Absolute mean contribution of each variable to each career outcome prediction',
+    xaxis=dict(title='mean(|SHAP value|)'),
+    height=800  # Adjust the height value as needed
+)
+
+fig.update_layout(legend=dict(title='Career outcomes'))
+st.plotly_chart(fig)
+
+
+
+
+st.write("In this graph we can see how each variable contributes to assessing which career outcome a player will have.")
+
+st.write("First of all we can see that season_number is the variable which has more weight has when predicting, this is because the lower the number the seasons a player is in the league the less time he has to develop to a bigger role, so he will be an Out of the league or maybe be in a Roster spot. However, the more seasons, the more time to improve and accumulate numbers, so in the end he will have good statistics and will have a better career outcome.")
+
+st.write("The next important feature in contribution is the draftpick, it looks like this variable affects more the extremes. It makes sense as if a player was selected in the early positions of the draft, he will likely develop into an Elite player, or if he does not do good, his reputation will be ruined and no one will want him, developing in an Out of the league player. On the other hand, if a player was undrafted or drafted late in the draft, it will be really hard for him to develop into a star.")
+
+st.write("An interesting feature that has big effect is the fta, this one refers to the number of free throws a player attempts in a season. It is a widely spread opinion that referees treat differently stars compared to the rest of players, and it seems that our model agrees with it as it shows that if a player has a lot of free-throw attempts it will have a lot of contribution in it being an Elite player. On the other hand, if the player does not attempt so many free-throws it will not have such a big contribution.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fig3 = shap.summary_plot(shap_values[:,:,0], X_test, show=False)
+
+st.write("## Out of the League Summary Plot")
+st_shap(fig3, height=500)
+
+
+
+
+st.write("## Rotation Summary Plot")
+st_shap(shap.summary_plot(shap_values[:,:,2], X_test, show=False), height=500)
+
+
+
+
+st.write("## Starter Summary Plot")
+st_shap(shap.summary_plot(shap_values[:,:,3], X_test, show=False), height=500)
+
+
+
+st.write("## Elite Summary Plot")
+st_shap(shap.summary_plot(shap_values[:,:,5], X_test, show=False), height=500)
+
+
+
