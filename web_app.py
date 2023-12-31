@@ -45,6 +45,26 @@ st.write("""And with those season outcomes we can compute the career outcome of 
          \nHighest level of success that the player achieved for at least two seasons after his first four seasons in the league""")
 
 
+st.write("## Example")
+st.write("""As you can see below Marc Gasol has ELITE career outcome since:
+         \n- The first 4 seasons doesn't count
+         \n- And the highest level of success he achieved twice after their first 4 seasons is Elite on 2012 and 2014 seasons""")
+
+left_co, cent_co,last_co = st.columns(3)
+
+with cent_co:
+    st.image('https://cdn.nba.com/headshots/nba/latest/1040x760/201188.png', caption='Marc Gasol', width=300)
+    
+
+
+
+
+
+image = Image.open('images\\imagen.png')
+
+st.image(image, caption='Season outcomes of Marc Gasol')
+
+
 
 
 
