@@ -60,7 +60,7 @@ with cent_co:
 
 
 
-image = Image.open('images\\imagen.png')
+image = Image.open('images\\img.png')
 
 st.image(image, caption='Season outcomes of Marc Gasol')
 
