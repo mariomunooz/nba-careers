@@ -27,7 +27,7 @@ Finally, another interesting feature is the fta, which seems to have a bigger im
 st.write("# Summary Plots")
 
 st.write("## Out of the League Summary Plot")
-out_of_the_league = Image.open('plots\\out_of_the_league.png')
+out_of_the_league = Image.open('plots/out_of_the_league.png')
 st.image(out_of_the_league)
 
 st.write("""
@@ -42,7 +42,7 @@ st.write("""
 
 
 st.write("## Rotation Summary Plot")
-rotation = Image.open('plots\\rotation.png')
+rotation = Image.open('plots/rotation.png')
 st.image(rotation)
 
 st.write("""
@@ -59,7 +59,7 @@ st.write("""
 
 
 st.write("## Starter Summary Plot")
-starter = Image.open('plots\\starter.png')
+starter = Image.open('plots/starter.png')
 st.image(starter)
 
 st.write("""
@@ -70,7 +70,7 @@ st.write("""
          """)
 
 st.write("## Elite Summary Plot")
-elite = Image.open('plots\\elite.png')
+elite = Image.open('plots/elite.png')
 st.image(elite)
 
 st.write("""
