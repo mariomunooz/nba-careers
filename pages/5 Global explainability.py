@@ -7,7 +7,7 @@ layout="wide",
 initial_sidebar_state="expanded")
 
 st.write("# Global Explainability")
-plotly_plot = Image.open('plots\\plotly_plot.png')
+plotly_plot = Image.open('plots/plotly_plot.png')
 
 st.image(plotly_plot)
 
