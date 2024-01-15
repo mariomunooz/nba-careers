@@ -66,11 +66,13 @@ def plot_distributions_from_df(df, columns, title_txt):
 
 
 def plot_distributions_by_target(df, column, target_column):
+    class_names = ['Out of the League', 'Roster', 'Rotation', 'Starter', 'All-Star', 'Elite'] #
     unique_values = df[target_column].unique()
+    unique_values = sorted(unique_values)
     num_unique_values = len(unique_values)
 
     # Convert unique values to strings
-    unique_values_str = [str(value) for value in unique_values]
+    unique_values_str = [class_names[value] for value in unique_values]
 
     # Calculate number of rows and columns
     num_rows = -(-num_unique_values // 3)  # Round up division to get the number of rows
@@ -78,14 +80,14 @@ def plot_distributions_by_target(df, column, target_column):
     
 
     
-    fig = make_subplots(rows=num_rows, cols=num_columns, subplot_titles=unique_values_str, horizontal_spacing=0.12)
+    fig = make_subplots(rows=num_rows, cols=num_columns, subplot_titles=unique_values_str, horizontal_spacing=0.2, vertical_spacing = 0.5)
 
     for i, value in enumerate(unique_values, start=1):
         row = ((i - 1) // num_columns) + 1  # Calculate the current row for subplot
         col = ((i - 1) % num_columns) + 1  # Calculate the column in the current row for subplot
 
         data = df[df[target_column] == value][column]
-        histogram = go.Histogram(x=data, name=f'{column} for {value}', histnorm='probability density')
+        histogram = go.Histogram(x=data, name=f'{column} for {class_names[value]}', histnorm='probability density')
         fig.add_trace(histogram, row=row, col=col)
 
         fig.update_xaxes(title_text=column, row=row, col=col)
@@ -115,6 +117,8 @@ boxplot_vars = {
     'Defense': ['steals', 'blocks', 'tot_fouls']
 }
 
+
+
 #The title and text
 st.title("League data Exploration 📊 ")
 st.write("In this tab we can see the most relevant information that we can extract through the data from the visual analytics.")
@@ -132,20 +136,22 @@ selected_options = st.multiselect('Select options for boxplot', options=selected
 
 st.write("Select the desired variables to see the league stats!")
 
-plot_boxplots_and_distributions_from_df(df, selected_options, f'Boxplot of the stats related to {selected_group}')
+
+if selected_options:
+
+    plot_boxplots_and_distributions_from_df(df, selected_options, f'Boxplot of the stats related to {selected_group}')
 
 
-
-for variable in selected_options:
-    #st.write(variable)
-    plot_distributions_by_target(df, variable, 'career_outcome')
-
-
-if st.button("Show league leaders:"):
     for variable in selected_options:
-        idx_max = df[variable].idxmax()
-        leader = df.iloc[idx_max]["player"]
-        leader_val = df.iloc[idx_max][variable]
-        leader_data = df[df["player"] == leader]
-        display_image_from_url(leader_data)
-        st.write(f"The all-time leader is {leader} with {leader_val} {variable}")
+        #st.write(variable)
+        plot_distributions_by_target(df, variable, 'career_outcome')
+
+
+    if st.button("Show league leaders:"):
+        for variable in selected_options:
+            idx_max = df[variable].idxmax()
+            leader = df.iloc[idx_max]["player"]
+            leader_val = df.iloc[idx_max][variable]
+            leader_data = df[df["player"] == leader]
+            display_image_from_url(leader_data)
+            st.write(f"The all-time {variable} leader is {leader} with {leader_val} {variable}")

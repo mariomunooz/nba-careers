@@ -7,30 +7,45 @@ page_icon=":basketball:",
 layout="wide",
 initial_sidebar_state="expanded")
 
+
+
 #The title
 st.title("Talent detection on NBA :basketball:")
 
 #The text
 st.write("""Detecting talent at early ages it is so important on the NBA, so we’ve developed this tool to help to understand why different players have different career paths.""")
-st.write("# Data Collection")
-
-st.write("""To compile this data, we utilized the [nba-api](https://github.com/swar/nba_api) Python package by Swar Patel, complementing it with 
-         additional details sourced from [Basketball Reference](https://www.basketball-reference.com/). We employed [Wikidata](https://query.wikidata.org/) to map NBA.com player IDs 
-         to their corresponding Basketball-Reference player IDs. This amalgamation of diverse data sources and 
-         tools enabled the creation of two comprehensive datasets crucial for predicting NBA player careers 
-         based on their initial seasons. """)
-
-st.write("""So, we get the following data:
-         \n- Player statistics
-         \n- NBA player awards 
-         
-         \n\nMore details on [Muñoz Serrano, M. (2023). Forecasting NBA Careers. How to get NBA Data?](https://medium.com/@mariomunozserrano/forecasting-nba-careers-how-to-get-nba-data-3adedaa8984e) """)
-
-
-st.write("# Methodology")
 
 st.write("""
-         With that we computed on a season level the season outcome of each player.
+         So, we defined 5 types of career outcomes depending how good was the career of an NBA player:
+         - Out of the League
+         - Roster
+         - Rotation
+         - Starter
+         - All-Star
+         - Elite
+         """)
+
+st.markdown('<a href="#Methodology">More details on Methodology</a>', unsafe_allow_html=True)
+
+st.write("""
+         And the following pages:
+         - League page: Where you can see the distribution of different statistics, compare them, see each distribution by career outcome and the league leaders of each statistic selected
+         - Player page: Where you can find a player and see different visualizations that help you to understand how good was the career path of the player selected
+         - Model Performance page: Here we used two models to predict the career outcome of a player Random Forest and XGBoost as XGBoost performed better, here you can see different visualizations to understand the performance of the XGBoost model.
+         - Global Explainability: Here you can see different shap visualisations to understand the patterns found by our XGBoost model
+         """)
+
+
+
+
+
+
+# Section with id 'hola_page'
+st.markdown('<div id="Methodology"></div>', unsafe_allow_html=True)
+st.header("Methodology")
+
+st.write("""
+         Using player NBA statistics and NBA player awards from all players drafted before 1983 we computed for each player and each season, different season outcomes that tells us how good was that season in the following way.
         \n**Season Outcome**
         \n- **Elite**: A player that won any All NBA award (1st, 2nd, or 3rd team), MVP, or DPOY in that season.
         \n- **All-Star**: A player selected to be an All-Star that season.
@@ -40,34 +55,7 @@ st.write("""
         \n- **Out of the League**: A player that is not in the NBA in that season.
 """)
 
-st.write("""And with those season outcomes we can compute the career outcome of each player in the following way
+st.write("""And with those season outcomes we computed the career outcome of each player in the following way
          \n**Career outcome**
          \nHighest level of success that the player achieved for at least two seasons after his first four seasons in the league""")
-
-
-st.write("## Example")
-st.write("""As you can see below Marc Gasol has ELITE career outcome since:
-         \n- The first 4 seasons doesn't count
-         \n- And the highest level of success he achieved twice after their first 4 seasons is Elite on 2012 and 2014 seasons""")
-
-left_co, cent_co,last_co = st.columns(3)
-
-with cent_co:
-    st.image('https://cdn.nba.com/headshots/nba/latest/1040x760/201188.png', caption='Marc Gasol', width=300)
-    
-
-
-
-
-
-image = Image.open('images\\img.png')
-
-st.image(image, caption='Season outcomes of Marc Gasol')
-
-
-
-
-
-
-
 

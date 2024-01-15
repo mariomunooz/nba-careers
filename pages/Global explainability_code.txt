@@ -10,6 +10,8 @@ from streamlit_shap import st_shap
 import plotly.graph_objects as go
 from sklearn.metrics import confusion_matrix, classification_report, ConfusionMatrixDisplay
 
+
+
 class CustomLabelEncoder(LabelEncoder):
     def _init_(self, mapping):
         super()._init_()
@@ -46,23 +48,6 @@ X_test = data["X_test"]
 y_test = data["y_test"]
 y_pred_test = data["y_pred_test"]
 young_players = data["young_players"]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -110,8 +95,8 @@ fig.update_layout(
 )
 
 fig.update_layout(legend=dict(title='Career outcomes'))
-st.plotly_chart(fig)
 
+st.plotly_chart(fig)
 
 
 
