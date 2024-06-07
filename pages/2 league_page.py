@@ -99,6 +99,7 @@ def plot_distributions_by_target(df, column, target_column):
 
 def plot_boxplots_and_distributions_from_df(df, columns, title_txt):
     plot_boxplots_from_df(df, columns, title_txt)
+    title_txt = title_txt..replace("Boxplots", "Distributions")
     plot_distributions_from_df(df, columns, title_txt)
 
 
